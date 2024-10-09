@@ -1,0 +1,120 @@
+.app {
+	text-align: center;
+}
+
+.todosForm {
+	width: 400px;
+	margin: 30px auto;
+	padding: 20px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+}
+
+.addTask {
+	display: block;
+	width: 300px;
+	padding: 5px 10px;
+	margin: 0 auto;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	font-size: 16px;
+	border: 5px solid #4caf50;
+}
+
+.addTask:focus {
+	border: 5px solid #0e863e; /* Изменяем цвет границы при фокусе */
+	outline: none; /* Убираем стандартный контур */
+}
+
+.taskBlock {
+	display: flex;
+	justify-content: space-between; /* Распределяет пространство между элементами */
+	align-items: center; /* Центрирует элементы по вертикали */
+	width: 300px;
+	padding: 5px 10px;
+	margin: 0 auto 15px;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	font-size: 16px;
+}
+
+.loader {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 25px;
+	height: 25px;
+	border: 5px solid #86bbcf;
+	border-radius: 50%;
+	border-left-color: transparent;
+	animation: loader 1s infinite;
+}
+
+@keyframes loader {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+.taskButton {
+	background-color: #4caf50; /* Зеленый цвет фона */
+	border: none; /* Убираем границу */
+	color: white; /* Белый цвет текста */
+	padding: 5px 10px; /* Отступы внутри кнопки */
+	text-align: center; /* Выравнивание текста по центру */
+	text-decoration: none; /* Убираем подчеркивание */
+	display: inline-block; /* Отображаем как блочный элемент */
+	font-size: 16px; /* Размер шрифта */
+	margin: 10px; /* Внешние отступы */
+	cursor: pointer; /* Меняем курсор на указатель при наведении */
+	transition: background-color 0.3s ease; /* Плавный переход при наведении */
+}
+
+.taskButton:hover {
+	background-color: #45a049; /* Более темный зеленый цвет фона */
+	opacity: 0.8; /* Затемняем кнопку на 20% */
+}
+
+/* Стили для кнопки при нажатии */
+.taskButton:active {
+	background-color: #3e8e41; /* Еще более темный зеленый цвет фона */
+	opacity: 0.6; /* Затемняем кнопку на 40% */
+	transform: translateY(2px); /* Сдвигаем кнопку вниз на 2 пикселя */
+}
+
+.deleteButton {
+	background-color: #4caf50;
+	color: white;
+	border: none;
+	padding: 5px 10px;
+	cursor: pointer;
+	border-radius: 4px;
+}
+
+.tasksOperation {
+	display: flex;
+	justify-content: space-between; /* Распределяет пространство между элементами */
+	align-items: center; /* Центрирует элементы по вертикали */
+	width: 300px;
+	padding: 5px 10px;
+	margin: 0 auto 15px;
+	/* border: 1px solid #ccc; */
+	border-radius: 3px;
+	font-size: 12px;
+}
+
+.sortButton {
+	background-color: rgb(185, 185, 185);
+	border: none;
+	padding: 5px 10px;
+	cursor: pointer;
+	border-radius: 4px;
+}
+
+.findTask {
+	padding: 3px 5px;
+}
