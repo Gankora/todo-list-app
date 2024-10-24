@@ -1,7 +1,10 @@
 import { useState } from 'react';
+import { useTodoContext } from '../TodoContext';
 
-export const useUpdateTask = (newTaskTitle, setNewTaskTitle, setTodos) => {
+export const useUpdateTask = () => {
 	const [editingTask, setEditingTask] = useState(null); // изменение задачи
+
+	const { newTaskTitle, setNewTaskTitle, setTodos } = useTodoContext();
 
 	const startEditing = (task) => {
 		// функция вывода задачи в инпут для обновления задачи
@@ -13,26 +16,16 @@ export const useUpdateTask = (newTaskTitle, setNewTaskTitle, setTodos) => {
 	const updateTask = () => {
 		if (!newTaskTitle || !editingTask) return;
 
-		const updateTask = { title: newTaskTitle };
+		const updatedTask = { ...editingTask, title: newTaskTitle };
 
-		fetch(`http://localhost:3005/tasks/${editingTask.id}`, {
-			method: 'PUT',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(updateTask),
-		})
-			.then((response) => response.json())
-			.then((updatedTask) => {
-				setTodos((prevTodos) =>
-					prevTodos.map(
-						(todo) => (todo.id === updatedTask.id ? updatedTask : todo),
-						// id обновлённой задачи сравнивается с id всех задач из массива, при совпадении id, старая задача сменяется на новую (изменённую)
-					),
-				);
-				setEditingTask(null); // сброс редактируемой задачи
-				setNewTaskTitle('');
-			});
+		setTodos((prevTodos) =>
+			prevTodos.map(
+				(todo) => (todo.id === updatedTask.id ? updatedTask : todo),
+				// id обновлённой задачи сравнивается с id всех задач из массива, при совпадении id, старая задача сменяется на новую (изменённую)
+			),
+		);
+		setEditingTask(null); // сброс редактируемой задачи
+		setNewTaskTitle('');
 	};
 	return {
 		editingTask,

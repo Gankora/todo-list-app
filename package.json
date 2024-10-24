@@ -1,7 +1,7 @@
 {
 	"name": "todo-list-app",
 	"version": "0.1.0",
-	"homepage": "https://github.com/Gankora/todo-list.git",
+	"homepage": "https://Gankora.github.io/todo-list-app",
 	"private": true,
 	"dependencies": {
 		"@testing-library/jest-dom": "^5.17.0",
@@ -46,7 +46,7 @@
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-prettier": "^5.2.1",
 		"eslint-plugin-react": "^7.37.0",
-		"gh-pages": "^6.1.1",
+		"gh-pages": "^6.2.0",
 		"globals": "^15.9.0",
 		"prettier": "^3.3.3"
 	}

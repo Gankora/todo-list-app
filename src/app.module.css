@@ -29,13 +29,19 @@
 .taskBlock {
 	display: flex;
 	justify-content: space-between; /* Распределяет пространство между элементами */
-	align-items: center; /* Центрирует элементы по вертикали */
+	align-items: center;
 	width: 300px;
 	padding: 5px 10px;
 	margin: 0 auto 15px;
 	border: 1px solid #ccc;
 	border-radius: 3px;
 	font-size: 16px;
+}
+
+.taskText {
+	text-align: left; /* Устанавливает выравнивание текста по левому краю */
+	overflow-wrap: break-word; /* Позволяет разрывать длинные слова */
+	flex-grow: 1; /* Позволяет тексту занимать доступное пространство */
 }
 
 .loader {
