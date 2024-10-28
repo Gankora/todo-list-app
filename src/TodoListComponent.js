@@ -101,7 +101,7 @@ export const TodoListComponent = () => {
 								: null,
 						)
 						.map(({ id, title }) => (
-							<div className={styles.taskBlock} key={id || title}>
+							<div className={styles.taskBlock} key={id}>
 								<span
 									className={styles.taskText}
 									onClick={() => startEditing({ id, title })}

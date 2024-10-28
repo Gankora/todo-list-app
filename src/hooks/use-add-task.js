@@ -6,7 +6,7 @@ export const useAddTask = () => {
 	const addTask = () => {
 		if (!newTaskTitle) return;
 
-		const newTask = { title: newTaskTitle };
+		const newTask = { id: Date.now(), title: newTaskTitle };
 
 		setTodos((prevTodos) => [...prevTodos, newTask]);
 		setNewTaskTitle('');
