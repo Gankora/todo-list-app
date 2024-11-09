@@ -1,56 +1,87 @@
-import { useCallback, useEffect } from 'react';
-import debounce from 'lodash.debounce';
-import { useTodoContext } from './TodoContext';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectAllTodoListData } from './selectors/selectors';
 import {
-	useAddTask,
-	useDeleteTask,
-	useGetTodoList,
-	useSortTasks,
-	useUpdateTask,
-} from './hooks';
+	initializeTasks,
+	setSearchQuery,
+	addTask,
+	deleteTask,
+	toggleSort,
+	setFilteredTodos,
+	setNewTaskTitle,
+	setEditingTask,
+	updateTaskAction,
+} from './actions';
+import debounce from 'lodash.debounce';
+
 import styles from './app.module.css';
 
 export const TodoListComponent = () => {
-	const {
-		filteredTodos,
-		setFilteredTodos,
-		todos,
-		searchQuery,
-		setSearchQuery,
-		newTaskTitle,
-		setNewTaskTitle,
-	} = useTodoContext();
+	const dispatch = useDispatch();
 
-	// подключение хуков в главный компонент
-	const { addTask } = useAddTask();
-	const { deleteTask } = useDeleteTask();
-	const { isLoading } = useGetTodoList();
-	const { editingTask, startEditing, updateTask } = useUpdateTask();
-	const { isSortedAlphabetically, toggleSort, sortedTodos } = useSortTasks();
+	const {
+		todos,
+		filteredTodos,
+		searchQuery,
+		newTaskTitle,
+		isSortedAlphabetically,
+		isLoading,
+		editingTask,
+	} = useSelector(selectAllTodoListData);
+
+	const startEditing = (task) => {
+		dispatch(setEditingTask(task)); // Обновляем редактируемую задачу
+		dispatch(setNewTaskTitle(task.title)); // Устанавливаем название задачи для редактирования
+	};
+
+	const updateTask = () => {
+		if (!newTaskTitle || !editingTask) return;
+
+		const updatedTask = { ...editingTask, title: newTaskTitle };
+
+		dispatch(updateTaskAction(updatedTask)); // Введите нужное действие для обновления задачи
+		dispatch(setEditingTask(null)); // Сброс редактируемой задачи
+		dispatch(setNewTaskTitle('')); // Сброс названия новой задачи
+	};
 
 	// условие для поиска и сортировки
-	const todosArray = isSortedAlphabetically ? sortedTodos : filteredTodos;
+	const todosArray = todos
+		.filter(
+			(todo) =>
+				!searchQuery ||
+				todo.title.toLowerCase().includes(searchQuery.toLowerCase()),
+		)
+		.sort((a, b) => (isSortedAlphabetically ? a.title.localeCompare(b.title) : 0));
 
 	// продвинутый поиск с помощью debounce()
-	const searchTasks = useCallback(
-		(query) => {
-			const lowerCaseQuery = query.toLowerCase();
-			const filtered = todos.filter((todo) =>
-				todo.title.toLowerCase().includes(lowerCaseQuery),
-			);
-			setFilteredTodos(filtered);
-		},
-		[todos],
-	);
+	useEffect(() => {
+		dispatch(initializeTasks());
+	}, [dispatch]);
+
+	const searchTasks = (query) => {
+		const lowerCaseQuery = query.toLowerCase();
+		const filtered = todos.filter((todo) =>
+			todo.title.toLowerCase().includes(lowerCaseQuery),
+		);
+
+		// обновление filteredTodos только при изменении результатов
+		if (JSON.stringify(filtered) !== JSON.stringify(filteredTodos)) {
+			dispatch(setFilteredTodos(filtered));
+		}
+	};
+
+	const debouncedSearch = debounce(searchTasks, 300);
 
 	useEffect(() => {
-		const debouncedSearch = debounce(searchTasks, 300);
 		debouncedSearch(searchQuery);
+	}, [searchQuery, debouncedSearch]);
 
-		return () => {
-			debouncedSearch.cancel();
-		};
-	}, [searchQuery, searchTasks]);
+	const handleAddTask = () => {
+		if (!newTaskTitle) return;
+		const newTask = { id: Date.now(), title: newTaskTitle };
+		dispatch(addTask(newTask)); // Добавление задачи
+		dispatch(setNewTaskTitle('')); // Сброс значения 'newTaskTitle', после добавления задачи
+	};
 
 	return (
 		<div className={styles.app}>
@@ -60,16 +91,15 @@ export const TodoListComponent = () => {
 						className={styles.findTask}
 						type="text"
 						value={searchQuery}
-						onChange={({ target }) => setSearchQuery(target.value)}
+						onChange={({ target }) => dispatch(setSearchQuery(target.value))}
 						placeholder="Найти задачу"
-						disabled={isSortedAlphabetically}
 					/>
 					<button
 						className={styles.sortButton}
 						style={
 							isSortedAlphabetically ? { backgroundColor: '#4caf50' } : null
 						}
-						onClick={toggleSort}
+						onClick={() => dispatch(toggleSort())}
 					>
 						sort abc
 					</button>
@@ -81,12 +111,12 @@ export const TodoListComponent = () => {
 					className={styles.addTask}
 					type="text"
 					value={newTaskTitle}
-					onChange={({ target }) => setNewTaskTitle(target.value)}
+					onChange={({ target }) => dispatch(setNewTaskTitle(target.value))}
 					placeholder="Введите название задачи"
 				/>
 				<button
 					className={styles.taskButton}
-					onClick={editingTask ? updateTask : addTask}
+					onClick={editingTask ? () => updateTask() : () => handleAddTask()}
 				>
 					{editingTask ? 'Сохранить изменения' : 'Добавить задачу'}
 				</button>
@@ -111,7 +141,7 @@ export const TodoListComponent = () => {
 								</span>
 								<button
 									className={styles.deleteButton}
-									onClick={() => deleteTask(id)}
+									onClick={() => dispatch(deleteTask(id))}
 								>
 									Удалить
 								</button>
